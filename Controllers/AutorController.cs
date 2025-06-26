@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Interfaces.IMainService;
+using Application.Services.Exceptions;
 using Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,12 @@ public class AutorController : MainController
         try
         {
             var resultado = await _service.ListarAutoresPaginadoAsync(pagina, qtdPagina);
-            return CustomResponse(resultado);
+            return CustomResponse(resultado, null);
+        }
+        catch (NotFoundException ex)
+        {
+            NotificarErro(ex.Message);
+            return CustomResponse(null, 404);
         }
         catch (Exception ex)
         {
@@ -39,6 +45,11 @@ public class AutorController : MainController
             var resultado = await _service.ListarAutoresAsync();
             return CustomResponse(resultado);
         }
+        catch (NotFoundException ex)
+        {
+            NotificarErro(ex.Message);
+            return CustomResponse(null, 404);
+        }
         catch (Exception ex)
         {
             NotificarErro(ex.Message);
@@ -46,13 +57,18 @@ public class AutorController : MainController
         }
     }
 
-    [HttpGet("/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> BuscarAutorPorIdAsync(int id)
     {
         try
         {
             var resultado = await _service.BuscarAutorPorIdAsync(id);
             return CustomResponse(resultado);
+        }
+        catch(NotFoundException ex)
+        {
+            NotificarErro(ex.Message);
+            return CustomResponse(null, 404);
         }
         catch (Exception ex)
         {
@@ -66,8 +82,8 @@ public class AutorController : MainController
     {
         try
         {
-            var resultado = await _service.AdicioanrAutorAsync(autorDto);
-            return CustomResponse(resultado);
+            var resultado = await _service.AdicionarAutorAsync(autorDto);
+            return CustomResponse("Autor adicionado com sucesso.");
         }
         catch (Exception ex)
         {
@@ -82,24 +98,34 @@ public class AutorController : MainController
         try
         {
             var resultado = await _service.AtualizarAutorAsync(autorDto);
-            return CustomResponse(resultado);
+            return CustomResponse("Autor atualizado com sucesso.");
         }
-        catch(Exception ex)
+        catch (NotFoundException ex)
+        {
+            NotificarErro(ex.Message);
+            return CustomResponse(null, 404);
+        }
+        catch (Exception ex)
         {
             NotificarErro(ex.Message);
             return CustomResponse();
         }
     }
 
-    [HttpDelete("/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> ExcluirAutorAsync(int id)
     {
         try
         {
             var resultado = await _service.ExcluirAutorAsync(id);
-            return CustomResponse(resultado);
+            return CustomResponse("Autor excluído com sucesso.");
         }
-        catch(Exception ex)
+        catch (NotFoundException ex)
+        {
+            NotificarErro(ex.Message);
+            return CustomResponse(null, 404);
+        }
+        catch (Exception ex)
         {
             NotificarErro(ex.Message);
             return CustomResponse();
