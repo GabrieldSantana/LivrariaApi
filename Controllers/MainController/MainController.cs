@@ -19,7 +19,7 @@ public abstract class MainController : ControllerBase
         return !_notificador.TemNotificacao();
     }
 
-    protected ActionResult CustomResponse(object? result = null)
+    protected ActionResult CustomResponse(object? result = null, int? codigo = null)
     {
         if (OperacaoValida())
         {
@@ -30,11 +30,22 @@ public abstract class MainController : ControllerBase
             });
         }
 
-        return BadRequest(new
+        if (codigo == 404)
         {
-            success = false,
-            errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
-        });
+            return NotFound(new
+            {
+                success = false,
+                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+            });
+        }
+        else
+        {
+            return BadRequest(new
+            {
+                success = false,
+                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+            });
+        }
     }
 
     protected ActionResult CustomResponse(ModelStateDictionary modelState)
