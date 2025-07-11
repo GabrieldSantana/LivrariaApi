@@ -7,7 +7,7 @@ API REST desenvolvida com ASP.NET Core para gerenciamento de livros e autores, u
 
 ## 🚀 Tecnologias Utilizadas
 
-- [.NET 6](https://dotnet.microsoft.com/download)
+- [.NET 8](https://dotnet.microsoft.com/download)
 - ASP.NET Core Web API
 - **FluentValidation** – para validações robustas
 - **AutoMapper** – para mapeamento entre entidades e DTOs
@@ -19,9 +19,8 @@ API REST desenvolvida com ASP.NET Core para gerenciamento de livros e autores, u
 
 ## 🔧 Requisitos
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download)
-- Um banco de dados (ex: SQL Server, PostgreSQL)
-- Ferramenta para testar a API (Postman, Insomnia, etc.)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- Banco de dados SQL Server
 
 ---
 
@@ -31,25 +30,63 @@ API REST desenvolvida com ASP.NET Core para gerenciamento de livros e autores, u
 /LivrariaApi.sln
 │
 ├─ Application
-│   ├─ DTOs (Livros, Autores)
-│   ├─ Enums
-│   ├─ Models (para retorno de operação)
+│   ├─ Interfaces (para retorno de operação)
+│   │   ├─ IMainService
+│   │   │   └─ IMainService.cs
+│   │   ├─ IAutorSevice.cs
+│   │   └─ ILivroSevice.cs
 │   ├─ Notification (padronização de notificações/erros)
 │   ├─ Validators (FluentValidation)
+│   ├─ Services
+│   │   ├─ MainService
+│   │   │   └─ MainService.cs
+│   │   ├─ AutorService.cs
+│   └─  └─ LivroService.cs
 │
+├─ Config
+│   ├─ AutoMapper.cs
+│   └─ DependencyInjection.cs
+├─ Controllers
+│   ├─ MainController
+│   │   └─ MainController.cs
+│   ├─ AutorController.cs
+│   └─ LivroController.cs
+├─ db
+│   ├─ Create for LIVRARIA_DB.sql
+│   ├─ Insert for LIVRARIA_DB.sql
+│   └─ Logger Table and Triggers for LIVRARIA_DB.sql (Ainda não implementado)
 ├─ Domain
-│   ├─ Entidades (Livro.cs, Autor.cs)
-│   ├─ Enums (GeneroEnum.cs)
+│   ├─ DTOs
+│   │   ├─ AutorDto.cs
+│   │   └─ LivroDto.cs
+│   ├─ Enums
+│   │   └─ GeneroEnum.cs
+│   ├─ Models
+│   │   ├─ AutorModel.cs
+│   │   ├─ LivroModel.cs
+│   │   └─ RetornoPaginado.cs
+│   ├─ Notification
+│   │   └─ Notificacao.cs
+│   ├─ Validators
+│   │   ├─ AutorValidator.cs
+│   └─  └─ LivroValidator.cs
 │
 ├─ Infrastructure
 │   ├─ Interfaces (contratos dos repositórios)
+│   │   ├─ IAutorRepository.cs
+│   │   └─ ILivroRepository.cs
 │   ├─ Repositories (implementações com transações via DbConnection)
+│   │   ├─ AutorRepository.cs
+│   └─  └─ LivroRepository.cs
 │
-└─ LivrariaApi
-    ├─ Controllers (AutorController, LivroController)
-    ├─ Program.cs (startup principal)
-    ├─ appsettings.json (configuração)
-    └─ LivrariaApi.http (testes de endpoints)
+├─ LivrariaApi
+│   ├─ Controllers (AutorController, LivroController)
+│   ├─ Program.cs (startup principal)
+│   ├─ appsettings.json (configuração)
+│   └─ LivrariaApi.http (testes de endpoints)
+├─ appsettings.json
+├─ Program.cs
+└─ README.md
 ```
 
 ---
@@ -86,16 +123,22 @@ A API estará disponível em: `https://localhost:5001`
 | Método | Rota               | Descrição                  |
 |--------|--------------------|----------------------------|
 | GET    | `/api/livro`       | Lista todos os livros      |
+| GET    | `/api/livro/{pagina}/{qtdPagina}`       | Lista paginada dos livros  |
 | GET    | `/api/livro/{id}`  | Detalha um livro específico |
 | POST   | `/api/livro`       | Cadastra um novo livro     |
+| PUT   | `/api/livro/{id}`       | Atualizar um livro específico     |
+| DELETE | `/api/livro/{id}`  | Remove um livro específico |
 
 ### 👨‍💼 Autores
 
 | Método | Rota               | Descrição                  |
 |--------|--------------------|----------------------------|
 | GET    | `/api/autor`       | Lista todos os autores     |
+| GET    | `/api/autor/{pagina}/{qtdPagina}`       | Lista paginada dos autores  |
 | GET    | `/api/autor/{id}`  | Detalha um autor específico |
 | POST   | `/api/autor`       | Cadastra um novo autor     |
+| PUT   | `/api/autor/{id}`       | Atualizar um autor específico     |
+| DELETE | `/api/autor/{id}`  | Remove um autor específico |
 
 ---
 
